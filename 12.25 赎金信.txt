@@ -1,0 +1,47 @@
+题目：
+383. 赎金信
+给你两个字符串：ransomNote 和 magazine ，判断 ransomNote 能不能由 magazine 里面的字符构成。
+如果可以，返回 true ；否则返回 false 。
+magazine 中的每个字符只能在 ransomNote 中使用一次。
+
+示例 1：
+输入：ransomNote = "a", magazine = "b"
+输出：false
+
+示例 2：
+输入：ransomNote = "aa", magazine = "ab"
+输出：false
+
+示例 3：
+输入：ransomNote = "aa", magazine = "aab"
+输出：true
+ 
+提示：
+
+1 <= ransomNote.length, magazine.length <= 105
+ransomNote 和 magazine 由小写英文字母组成
+
+解法思路：
+	小写字母，且判断是否能使用另一个数组的元素来抵消，这样直接使用数组来进行hash就行。
+	由于字典字符串是只能使用一次，那么我们vec里记录字典字符串的值，应该就是其出现次数。
+	然后遍历目标字符串，如果其ch对应的值在vec里的值小于等于0（实际上只能等于0），直接结束。否则就对其-1。
+
+代码：
+bool canConstruct(string ransomNote, string magazine) {
+        // 统计magazine里面的字符出现频率
+        // 小写字母，直接使用数组
+        vector<int> vec(26,0);
+        for(auto ch : magazine){
+            vec[ch-'a']++;
+        }
+        // 然后来处理ransomNote
+        for(auto ch : ransomNote){
+            if(vec[ch-'a']>0){
+                vec[ch-'a']--;
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
+    }
