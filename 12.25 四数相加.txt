@@ -1,0 +1,43 @@
+题目：
+454. 四数相加 II
+给你四个整数数组 nums1、nums2、nums3 和 nums4 ，数组长度都是 n ，请你计算有多少个元组 (i, j, k, l) 能满足：
+0 <= i, j, k, l < n
+nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0
+ 
+示例 1：
+输入：nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
+输出：2
+解释：
+两个元组如下：
+1. (0, 0, 0, 1) -> nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0
+2. (1, 1, 0, 0) -> nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0
+
+示例 2：
+输入：nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]
+输出：1
+
+解法思路：
+首先暴力解法肯定是n^4的复杂度的。
+然后考虑到使用hash来减少复杂度，如果类似两数之和的思想，那么可以将复杂度减少到n^2。然后思考这样是否可行？由于是四个数组，不用考虑去重问题。所以可以直接使用。
+使用hash：umap，存的是什么？key:a+b的值，value:a+b的值出现的次数。这是因为我们最终的结果要求的是有几组和为target的数值，所以我们value统计次数。
+
+代码：
+int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+        // 暴力解法n^4 四个数组不考虑去重问题，我们直接使用hash法就行。
+        unordered_map<int,int> map;// <a+b,a+b的出现次数>
+        int count = 0;
+        for(int a:nums1){
+            for(int b:nums2){
+                map[a+b]++;
+            }
+        }
+        for(int c:nums3){
+            for(int d:nums4){
+                if(map.find(0-(c+d))!=map.end()){
+                    // 找到了
+                    count += map[0-(c+d)];
+                }
+            }
+        }
+        return count;
+    }
