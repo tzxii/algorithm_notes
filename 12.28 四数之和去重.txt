@@ -1,0 +1,63 @@
+题目：
+18. 四数之和
+
+给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）：
+0 <= a, b, c, d < n
+a、b、c 和 d 互不相同
+nums[a] + nums[b] + nums[c] + nums[d] == target
+你可以按 任意顺序 返回答案 。
+
+示例 1：
+输入：nums = [1,0,-1,0,-2,2], target = 0
+输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+
+示例 2：
+输入：nums = [2,2,2,2,2], target = 8
+输出：[[2,2,2,2]]
+
+提示：
+1 <= nums.length <= 200
+-109 <= nums[i] <= 109
+-109 <= target <= 109
+
+解：
+由于仍然是在一个数组里面进行查找，且有可能出现重复的组合，需要考虑去重。
+那么我们仍然使用双指针方法进行时间复杂度的降低。四数组合其实就是在三数组合里面加一层循环，也就是每次最内层的双指针的逻辑处理过程，我们只认为只有这两个指针是变化的，其他都是确定的。
+比如此时四数之和，那么第一个和第二个数都是确定的。
+
+需要注意long的使用，防止数太大超出int的表示范围。
+
+代码：
+vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> result;
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<nums.size();i++){
+            if(i > 0 && nums[i]==nums[i-1]){
+                continue;
+            }
+            for(int j = i+1;j<nums.size();j++){
+                if(j > i+1 && nums[j] == nums[j-1]){
+                    // 此时选的是第二位，如果第二位的值之前已经出现过了，跳过。
+                    continue;
+                }
+                int left = j + 1;
+                int right = nums.size() - 1;
+                while(left < right){
+                    if((long) nums[i] + nums[j] + nums[left] + nums[right] < target){
+                        left ++;
+                    }
+                    else if((long)nums[i] + nums[j] + nums[left] + nums[right] > target){
+                        right --;
+                    }
+                    else{
+                        result.push_back({nums[i],nums[j],nums[left],nums[right]});
+                        while(left < right && nums[left] == nums[left+1]) left++;
+                        while(left < right && nums[right] == nums[right-1]) right--;
+                        left++;
+                        right--;
+                    }
+                }
+            }
+        }
+        return result;
+    }
